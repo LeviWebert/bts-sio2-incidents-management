@@ -1,5 +1,5 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <a class="btn btn-danger" href="{{ path('app_welcome') }}">Cancel</a>
-    <button class="btn btn-success">{{ button_label|default('Save') }}</button>
+    <a class="btn btn-outline-secondary" href="{{ path('app_welcome') }}">Annuler</a>
+    <button class="btn btn-outline-success">{{ button_label|default('Créer') }}</button>
 {{ form_end(form) }}

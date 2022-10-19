@@ -1,37 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} - Incidents list{% endblock %}
+{% block title %}{{ parent() }} - Backoffice - Liste des incidents{% endblock %}
 
 {% block body %}
-    <h1>Incidents List</h1>
-
+    <h1>Liste des incidents</h1>
+    <a class="btn btn-outline-warning" href="{{ path('app_welcome') }}">Retour à la homepage</a>
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>CreatedAt</th>
-                <th>Description</th>
-                <th>ReporterEmail</th>
-                <th>Reference</th>
-                <th>ProcessedAt</th>
-                <th>ResolveAt</th>
-                <th>RejectedAt</th>
-                <th>actions</th>
+                <th>Réference</th>
+                <th>Date de création</th>
+                <th>Priorité</th>
+                <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for incident in incidents %}
             <tr>
-                <td>{{ incident.id }}</td>
-                <td>{{ incident.createdAt ? incident.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ incident.description }}</td>
-                <td>{{ incident.reporterEmail }}</td>
                 <td>{{ incident.reference }}</td>
-                <td>{{ incident.processedAt ? incident.processedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ incident.resolveAt ? incident.resolveAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ incident.rejectedAt ? incident.rejectedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ incident.createdAt ? incident.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_backoffice_incident_show', {'id': incident.id}) }}">show</a>
+                    {% if incident.level.priority  == 1 %}
+                        <span class="badge text-bg-success">{{ incident.level.label }}</span>
+                    {% elseif incident.level.priority  == 2 %}
+                        <span class="badge text-bg-info">{{ incident.level.label }}</span>
+                    {% elseif incident.level.priority  == 3 %}
+                        <span class="badge text-bg-warning">{{ incident.level.label }}</span>
+                    {% elseif incident.level.priority  == 4 %}
+                        <span class="badge text-bg-danger">{{ incident.level.label }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if incident.status.normalized == "NEW" %}
+                        <span class="badge text-bg-info">{{ incident.status.label }}</span>
+                    {% elseif incident.status.normalized == "PROCESSING" %}
+                        <span class="badge text-bg-primary">{{ incident.status.label }}</span>
+                    {% elseif incident.status.normalized == "RESOLVED" %}
+                        <span class="badge text-bg-success">{{ incident.status.label }}</span>
+                    {% elseif incident.status.normalized == "REJECTED" %}
+                        <span class="badge text-bg-danger">{{ incident.status.label }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn btn-outline-primary" href="{{ path('app_backoffice_incident_show', {'id': incident.id}) }}">Détails</a>
                 </td>
             </tr>
         {% else %}

@@ -5,6 +5,7 @@ namespace App\Controller\Backoffice;
 use App\Entity\Incident;
 use App\Form\IncidentType;
 use App\Repository\IncidentRepository;
+use App\Repository\StatusRepository;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,11 +34,12 @@ class IncidentController extends AbstractController
     }
 
     #[Route('/{id}/process', name: 'app_backoffice_incident_process', methods: ['GET'])]
-    public function markAsProcessed(Incident $incident, IncidentRepository $incidentRepository): Response
+    public function markAsProcessed(Incident $incident, IncidentRepository $incidentRepository,StatusRepository $statusRepository): Response
     {
 
         if(!$incident->getProcessedAt()){
             $incident->setProcessedAt(new DateTimeImmutable('now',new \DateTimeZone('Europe/Paris')));
+            $incident->setStatus($statusRepository->findOneBy(["normalized"=>"PROCESSING"]));
             $incidentRepository->save($incident,true);
         }else{
             $this->addFlash(
@@ -52,11 +54,12 @@ class IncidentController extends AbstractController
     }
 
     #[Route('/{id}/resolve', name: 'app_backoffice_incident_resolve', methods: ['GET'])]
-    public function markAsResolved(Incident $incident, IncidentRepository $incidentRepository): Response
+    public function markAsResolved(Incident $incident, IncidentRepository $incidentRepository, StatusRepository $statusRepository): Response
     {
 
         if($incident->getProcessedAt() && !$incident->getResolveAt() && !$incident->getRejectedAt()){
             $incident->setResolveAt(new DateTimeImmutable('now',new \DateTimeZone('Europe/Paris')));
+            $incident->setStatus($statusRepository->findOneBy(["normalized"=>"RESOLVED"]));
             $incidentRepository->save($incident,true);
         }else{
             $this->addFlash(
@@ -74,10 +77,11 @@ class IncidentController extends AbstractController
 
 
     #[Route('/{id}/reject', name: 'app_backoffice_incident_reject', methods: ['GET'])]
-    public function markAsRejected(Incident $incident, IncidentRepository $incidentRepository): Response
+    public function markAsRejected(Incident $incident, IncidentRepository $incidentRepository, StatusRepository $statusRepository): Response
     {
         if(!$incident->getResolveAt() && !$incident->getRejectedAt()){
             $incident->setRejectedAt(new DateTimeImmutable('now',new \DateTimeZone('Europe/Paris')));
+            $incident->setStatus($statusRepository->findOneBy(["normalized"=>"REJECTED"]));
             $incidentRepository->save($incident,true);
         }else{
             $this->addFlash(

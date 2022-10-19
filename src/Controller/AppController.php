@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Incident;
 use App\Form\IncidentType;
 use App\Repository\IncidentRepository;
+use App\Repository\StatusRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,13 +22,14 @@ class AppController extends AbstractController
     }
 
     #[Route('/report-incident', name: 'app_report_incident', methods: ['GET', 'POST'])]
-    public function new(Request $request, IncidentRepository $incidentRepository): Response
+    public function new(Request $request, IncidentRepository $incidentRepository, StatusRepository $statusRepository): Response
     {
         $incident = new Incident();
         $form = $this->createForm(IncidentType::class, $incident);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $incident->setStatus($statusRepository->findOneBy(["normalized"=>"NEW"]));
             $incidentRepository->save($incident, true);
 
 

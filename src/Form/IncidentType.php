@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Incident;
+use App\Entity\Level;
+use App\Entity\Type;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -16,10 +19,30 @@ class IncidentType extends AbstractType
         $builder
             //->add('createdAt')
             ->add('reporterEmail',EmailType::class,[
-                "required"=>false
+                "required"=>false,
+                'label'=>'Email'
             ])
             ->add('description',TextareaType::class,[
                 "required"=>false
+            ])
+            ->add('level', EntityType::class, [
+                'class' => Level::class,
+                'choice_label' => function ($level) {
+                    return $level->getLabel();
+                },
+                'label'=>'Priorité'
+            ])
+            ->add('types', EntityType::class, [
+                'class' => Type::class,
+                'choice_label' => function ($type) {
+                    return $type->getLabel();
+                },
+                'label_attr' => [
+                    'class' => 'checkbox-inline',
+                ],
+                'multiple' => true,
+                'expanded' => true,
+                'by_reference' => false
             ])
             //->add('reference')
             //->add('processedAt')

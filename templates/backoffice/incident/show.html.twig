@@ -3,112 +3,109 @@
 {% block title %}{{ parent() }} - Backoffice - Incident {{ incident.reference }}{% endblock %}
 
 {% block body %}
-    <h1>Incident {{ incident.reference }}</h1>
 
-    {# read and display several types of flash messages #}
-    {% for label, messages in app.flashes(['error']) %}
-        {% for message in messages %}
-            <div class="flash-{{ label }}">
-                {{ message }}
+        <div class="row">
+            <div class="col-12">
+                <h1> Fiche incident</h1>
             </div>
-        {% endfor %}
-    {% endfor %}
+        </div>
+    <div class="row">
+        <div class="col-12">
+            {# read and display several types of flash messages #}
+            {% for label, messages in app.flashes(['error']) %}
+                {% for message in messages %}
+                    <div class="flash-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ incident.id }}</td>
-            </tr>
-            <tr>
-                <th>Date de création</th>
-                <td>{{ incident.createdAt ? incident.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Statut</th>
-                <td>
-                    {% if incident.status.normalized == "NEW" %}
-                        <span class="badge text-bg-info">{{ incident.status.label }}</span>
-                    {% elseif incident.status.normalized == "PROCESSING" %}
-                        <span class="badge text-bg-primary">{{ incident.status.label }}</span>
-                    {% elseif incident.status.normalized == "RESOLVED" %}
-                        <span class="badge text-bg-success">{{ incident.status.label }}</span>
-                    {% elseif incident.status.normalized == "REJECTED" %}
-                        <span class="badge text-bg-danger">{{ incident.status.label }}</span>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Priorité</th>
-                <td>
-                    {% if incident.level.priority  == 1 %}
-                        <span class="badge text-bg-success">{{ incident.level.label }}</span>
-                    {% elseif incident.level.priority  == 2 %}
-                        <span class="badge text-bg-info">{{ incident.level.label }}</span>
-                    {% elseif incident.level.priority  == 3 %}
-                        <span class="badge text-bg-warning">{{ incident.level.label }}</span>
-                    {% elseif incident.level.priority  == 4 %}
-                        <span class="badge text-bg-danger">{{ incident.level.label }}</span>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Types</th>
-                <td>
-                    {{ incident.types|map(t => t.label)|join(', ') }}
-                </td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ incident.description }}</td>
-            </tr>
-            <tr>
-                <th>Email de contact</th>
-                <td>{{ incident.reporterEmail }}</td>
-            </tr>
-            <tr>
-                <th>Réference</th>
-                <td>{{ incident.reference }}</td>
-            </tr>
-            <tr>
-                <th>Traité le</th>
-                <td>{{ incident.processedAt ? incident.processedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Résolu le</th>
-                <td>{{ incident.resolveAt ? incident.resolveAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Rejeté le</th>
-                <td>{{ incident.rejectedAt ? incident.rejectedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header h5">Incident {{ incident.reference }}</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <dl class="row">
+                                <dt class="col-2">Statut</dt>
+                                <dd class="col-4">
+                                    {% if incident.status.normalized == "NEW" %}
+                                        <span class="badge text-bg-info">{{ incident.status.label }}</span>
+                                    {% elseif incident.status.normalized == "PROCESSING" %}
+                                        <span class="badge text-bg-primary">{{ incident.status.label }}</span>
+                                    {% elseif incident.status.normalized == "RESOLVED" %}
+                                        <span class="badge text-bg-success">{{ incident.status.label }}</span>
+                                    {% elseif incident.status.normalized == "REJECTED" %}
+                                        <span class="badge text-bg-danger">{{ incident.status.label }}</span>
+                                    {% endif %}
+                                </dd>
+                                <dt class="col-2">Priorité</dt>
+                                <dd class="col-4">
+                                    {% if incident.level.priority  == 1 %}
+                                        <span class="badge text-bg-success">{{ incident.level.label }}</span>
+                                    {% elseif incident.level.priority  == 2 %}
+                                        <span class="badge text-bg-info">{{ incident.level.label }}</span>
+                                    {% elseif incident.level.priority  == 3 %}
+                                        <span class="badge text-bg-warning">{{ incident.level.label }}</span>
+                                    {% elseif incident.level.priority  == 4 %}
+                                        <span class="badge text-bg-danger">{{ incident.level.label }}</span>
+                                    {% endif %}
+                                </dd>
+                                <dt class="col-2">Réf</dt>
+                                <dd class="col-10">{{ incident.reference }}</dd>
+                                <dt class="col-2">Contact</dt>
+                                <dd class="col-10">{{ incident.reporterEmail }}</dd>
+                                <dt class="col-2">Types</dt>
+                                <dd class="col-10">{{ incident.types|map(t => t.label)|join(', ') }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-3">
+                            <dl class="row">
+                                <dt class="col-4">Crée le :</dt>
+                                <dd class="col-8">{{ incident.createdAt ? incident.createdAt|date('Y-m-d H:i:s') : '' }}</dd>
+                                <dt class="col-4">Traité le :</dt>
+                                <dd class="col-8">{{ incident.processedAt ? incident.processedAt|date('Y-m-d H:i:s') : '' }}</dd>
+                                <dt class="col-4">Résolu le :</dt>
+                                <dd class="col-8">{{ incident.resolveAt ? incident.resolveAt|date('Y-m-d H:i:s') : '' }}</dd>
+                                <dt class="col-4">Rejeté le :</dt>
+                                <dd class="col-8">{{ incident.rejectedAt ? incident.rejectedAt|date('Y-m-d H:i:s') : '' }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-3">
+                            <div class="vstack gap-3">
+                                {% if not incident.processedAt and not incident.rejectedAt %}
+                                    <a class="btn btn-outline-primary" href="{{ path('app_backoffice_incident_process',{'id':incident.id}) }}">Traiter l'incident</a>
+                                {% endif %}
+                                {% if incident.processedAt and not incident.resolveAt and not incident.rejectedAt %}
+                                    <a class="btn btn-outline-success" href="{{ path('app_backoffice_incident_resolve',{'id':incident.id}) }}">Marquer comme résolu</a>
+                                {% endif %}
 
-    {% if not incident.processedAt and not incident.rejectedAt %}
-        <a
-            class="btn btn-outline-primary"
-            href="{{ path('app_backoffice_incident_process',{'id':incident.id}) }}"
-        >Traiter l'incident</a>
-    {% endif %}
-    {% if incident.processedAt and not incident.resolveAt and not incident.rejectedAt %}
-        <a
-            class="btn btn-outline-success"
-            href="{{ path('app_backoffice_incident_resolve',{'id':incident.id}) }}"
-        >Marquer comme résolu</a>
-    {% endif %}
+                                {% if not incident.rejectedAt and not incident.resolveAt %}
+                                    <a class="btn btn-outline-danger" href="{{ path('app_backoffice_incident_reject',{'id':incident.id}) }}">Marquer comme rejeté</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col">
+                            <p><strong>Description</strong></p>
+                            <p>{{ incident.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-center">
+                    <a class="btn btn-outline-secondary" href="{{ path('app_backoffice_incident_index') }}">Retour à la liste</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    {% if not incident.rejectedAt and not incident.resolveAt %}
-        <a
-            class="btn btn-outline-danger"
-            href="{{ path('app_backoffice_incident_reject',{'id':incident.id}) }}"
-        >Marquer comme rejeté</a>
-    {% endif %}
 
-    <a
-        class="btn btn-outline-secondary"
-        href="{{ path('app_backoffice_incident_index') }}"
-    >Retour à la liste</a>
+
+
+
 
 
 {% endblock %}

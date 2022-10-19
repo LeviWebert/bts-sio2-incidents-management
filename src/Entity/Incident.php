@@ -6,6 +6,7 @@ use App\Repository\IncidentRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IncidentRepository::class)]
 class Incident
@@ -19,9 +20,13 @@ class Incident
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
+    //#[Assert\NotNull]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    //#[Assert\NotNull]
     private ?string $reporterEmail = null;
 
     #[ORM\Column(length: 255)]

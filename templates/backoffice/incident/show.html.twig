@@ -42,7 +42,18 @@
         </tbody>
     </table>
 
-    <a class="btn btn-danger" href="{{ path('app_backoffice_incident_index') }}">back to list</a>
+    {% if not incident.processedAt and not incident.rejectedAt %}
+        <a class="btn btn-primary" href="{{ path('app_backoffice_incident_process',{'id':incident.id}) }}">Begin processing incident</a>
+    {% endif %}
+    {% if incident.processedAt and not incident.resolveAt and not incident.rejectedAt %}
+        <a class="btn btn-success" href="{{ path('app_backoffice_incident_resolve',{'id':incident.id}) }}">Mark as resolved</a>
+    {% endif %}
+
+    {% if not incident.rejectedAt and not incident.resolveAt %}
+        <a class="btn btn-danger" href="{{ path('app_backoffice_incident_reject',{'id':incident.id}) }}">Mark as Rejected</a>
+    {% endif %}
+
+    <a class="btn btn-danger" href="{{ path('app_backoffice_incident_index') }}">Back to list</a>
 
 
 {% endblock %}

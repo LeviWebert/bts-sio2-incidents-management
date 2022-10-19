@@ -30,6 +30,13 @@ class AppController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $incidentRepository->save($incident, true);
 
+
+            // $this->addFlash() is equivalent to $request->getSession()->getFlashBag()->add()
+            $this->addFlash(
+                'success',
+                "Your incident has been successfully created with reference ".$incident->getReference()
+            );
+
             return $this->redirectToRoute('app_welcome', [], Response::HTTP_SEE_OTHER);
         }
 

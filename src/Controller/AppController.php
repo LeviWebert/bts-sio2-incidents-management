@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Incident;
+use App\Form\IncidentType;
+use App\Repository\IncidentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,11 +20,22 @@ class AppController extends AbstractController
         ]);
     }
 
-    #[Route('/report-incident', name: 'app_report_incident')]
-    public function reportIncident(): Response
+    #[Route('/report-incident', name: 'app_report_incident', methods: ['GET', 'POST'])]
+    public function new(Request $request, IncidentRepository $incidentRepository): Response
     {
-        return $this->render('app/index.html.twig', [
-            'controller_name' => 'AppController::reportIncident',
+        $incident = new Incident();
+        $form = $this->createForm(IncidentType::class, $incident);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $incidentRepository->save($incident, true);
+
+            return $this->redirectToRoute('app_welcome', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('app/report.html.twig', [
+            'incident' => $incident,
+            'form' => $form,
         ]);
     }
 }

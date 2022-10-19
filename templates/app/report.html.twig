@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} - Report Incident{% endblock %}
+
+{% block body %}
+    <h1>Report an Incident</h1>
+
+    {{ include('app/_incident_form.html.twig') }}
+
+    <a href="{{ path('app_welcome') }}">back to homepage</a>
+{% endblock %}

@@ -12,13 +12,13 @@ class IncidentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('createdAt')
-            ->add('description')
+            //->add('createdAt')
             ->add('reporterEmail')
-            ->add('reference')
-            ->add('processedAt')
-            ->add('resolveAt')
-            ->add('rejectedAt')
+            ->add('description')
+            //->add('reference')
+            //->add('processedAt')
+            //->add('resolveAt')
+            //->add('rejectedAt')
         ;
     }
 

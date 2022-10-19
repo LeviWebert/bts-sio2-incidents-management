@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Incident index{% endblock %}
+{% block title %}{{ parent() }} - Incidents list{% endblock %}
 
 {% block body %}
     <h1>Incident index</h1>
@@ -32,7 +32,6 @@
                 <td>{{ incident.rejectedAt ? incident.rejectedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('app_backoffice_incident_show', {'id': incident.id}) }}">show</a>
-                    <a href="{{ path('app_backoffice_incident_edit', {'id': incident.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -43,5 +42,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_backoffice_incident_new') }}">Create new</a>
 {% endblock %}

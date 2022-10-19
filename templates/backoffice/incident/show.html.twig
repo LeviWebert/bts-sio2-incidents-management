@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Incident{% endblock %}
+
+{% block body %}
+    <h1>Incident</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ incident.id }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ incident.createdAt ? incident.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ incident.description }}</td>
+            </tr>
+            <tr>
+                <th>ReporterEmail</th>
+                <td>{{ incident.reporterEmail }}</td>
+            </tr>
+            <tr>
+                <th>Reference</th>
+                <td>{{ incident.reference }}</td>
+            </tr>
+            <tr>
+                <th>ProcessedAt</th>
+                <td>{{ incident.processedAt ? incident.processedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>ResolveAt</th>
+                <td>{{ incident.resolveAt ? incident.resolveAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>RejectedAt</th>
+                <td>{{ incident.rejectedAt ? incident.rejectedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_backoffice_incident_index') }}">back to list</a>
+
+    <a href="{{ path('app_backoffice_incident_edit', {'id': incident.id}) }}">edit</a>
+
+    {{ include('backoffice/incident/_delete_form.html.twig') }}
+{% endblock %}

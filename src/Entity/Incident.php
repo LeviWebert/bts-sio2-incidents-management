@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\IncidentRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +35,13 @@ class Incident
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $rejectedAt = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTimeImmutable('now',new \DateTimeZone('Europe/Paris'));
+        $this->reference = $this->generateReference();
+    }
+
 
     public function getId(): ?int
     {
@@ -122,5 +130,16 @@ class Incident
         $this->rejectedAt = $rejectedAt;
 
         return $this;
+    }
+
+    private function generateReference(): string
+    {
+
+        return implode("",[
+            $this->createdAt->format("y"),
+            $this->createdAt->format("m"),
+            substr(str_shuffle('ABCDEFGHJKMNPQRSTUVWXYZ'),0,5)
+        ]);
+
     }
 }

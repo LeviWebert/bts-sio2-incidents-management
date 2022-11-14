@@ -4,9 +4,11 @@ namespace App\DataFixtures;
 
 use App\Entity\Level;
 use App\Entity\Status;
+use App\Entity\Incident;
 use App\Entity\Type;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
@@ -15,6 +17,7 @@ class AppFixtures extends Fixture
         $this->loadLevels($manager);
         $this->loadStatus($manager);
         $this->loadTypes($manager);
+        $this->loadTickets($manager);
     }
 
     private function loadLevels(ObjectManager $manager){
@@ -67,4 +70,51 @@ class AppFixtures extends Fixture
 
         $manager->flush();
     }
+
+    private function loadTickets(ObjectManager $manager){
+        $faker = Factory::create('fr_FR');
+
+        $types = $manager->getRepository(Type::class)->findAll();
+        $statuses = $manager->getRepository(Status::class)->findAll();
+        $levels = $manager->getRepository(Level::class)->findAll();
+
+        for($i = 0; $i< 50;$i++){
+
+            $typeskeys = array_rand($types,rand(2,4));
+            $levelKey = array_rand($levels,1);
+            $statusKey = array_rand($statuses,1);
+
+            $ticket = new Incident();
+            $ticket->setReporterEmail($faker->email);
+            $ticket->setDescription($faker->paragraph(3,true));
+            $ticket->setLevel($levels[$levelKey]);
+            $ticket->setStatus($statuses[$statusKey]);
+
+            switch ($ticket->getStatus()->getNormalized()){
+                case "PROCESSING":
+                    $ticket->setProcessedAt($ticket->getCreatedAt()->modify("+1 day"));
+                    break;
+                case "REJECTED":
+                    $ticket->setProcessedAt($ticket->getCreatedAt()->modify("+1 day"));
+                    $ticket->setRejectedAt($ticket->getCreatedAt()->modify("+2 day"));
+                    break;
+                case "RESOLVED":
+                    $ticket->setProcessedAt($ticket->getCreatedAt()->modify("+1 day"));
+                    $ticket->setResolveAt($ticket->getCreatedAt()->modify("+2 day"));
+                    break;
+                default:
+                    break;
+            }
+
+            foreach($typeskeys as $typeKey){
+                $ticket->addType($types[$typeKey]);
+            }
+
+            $manager->persist($ticket);
+
+        }
+
+        $manager->flush();
+    }
+
 }

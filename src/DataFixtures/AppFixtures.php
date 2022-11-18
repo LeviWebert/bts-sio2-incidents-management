@@ -6,18 +6,27 @@ use App\Entity\Level;
 use App\Entity\Status;
 use App\Entity\Incident;
 use App\Entity\Type;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Faker\Generator;
 
 class AppFixtures extends Fixture
 {
+    private Generator $faker;
+    public function __construct()
+    {
+        $this->faker=Factory::create('fr-FR');
+    }
+
     public function load(ObjectManager $manager): void
     {
         $this->loadLevels($manager);
         $this->loadStatus($manager);
         $this->loadTypes($manager);
         $this->loadTickets($manager);
+        $this->loadUser($manager);
     }
 
     private function loadLevels(ObjectManager $manager){
@@ -72,8 +81,6 @@ class AppFixtures extends Fixture
     }
 
     private function loadTickets(ObjectManager $manager){
-        $faker = Factory::create('fr_FR');
-
         $types = $manager->getRepository(Type::class)->findAll();
         $statuses = $manager->getRepository(Status::class)->findAll();
         $levels = $manager->getRepository(Level::class)->findAll();
@@ -85,8 +92,8 @@ class AppFixtures extends Fixture
             $statusKey = array_rand($statuses,1);
 
             $ticket = new Incident();
-            $ticket->setReporterEmail($faker->email);
-            $ticket->setDescription($faker->paragraph(3,true));
+            $ticket->setReporterEmail($this->faker->email);
+            $ticket->setDescription($this->faker->paragraph(3,true));
             $ticket->setLevel($levels[$levelKey]);
             $ticket->setStatus($statuses[$statusKey]);
 
@@ -115,6 +122,26 @@ class AppFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+
+    public function loadUser(ObjectManager $manager)
+    {
+        $userAdmin = new User();
+        $userAdmin->setEmail($this->faker->email)
+
+            ->setRoles(['ROLE_USER'])
+            ->setPassword('1234');
+        $manager->persist($userAdmin);
+        for ($i=0;$i<10;$i++)
+        {
+            $user = new User();
+            $user->setEmail($this->faker->email)
+                ->setRoles(['ROLE_USER'])
+                ->setPassword('1234');
+            $manager->persist($user);
+        }
+        $manager->flush();
+
     }
 
 }
